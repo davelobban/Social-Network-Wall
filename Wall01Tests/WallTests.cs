@@ -1,3 +1,4 @@
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Wall01;
@@ -21,7 +22,7 @@ namespace Tests
 
             var text = "I love the weather today";
             subject.Post("Alice", text);
-            var actual = subject.Read("Alice").Text;
+            var actual = subject.Read("Alice").First().Text;
 
             Assert.AreEqual(text, actual);
         }
@@ -49,7 +50,7 @@ namespace Tests
 
             var text = "I love the weather today";
             subject.Post("Alice", text);
-            var actual = subject.Read("Alice").TimeSince;
+            var actual = subject.Read("Alice").First().TimeSince;
 
             Assert.AreEqual(minutesAgo, actual);
         }
@@ -81,14 +82,19 @@ namespace Tests
             var minsAgo = alicePost1MinutesAgo;
             var text = alicePost1Text;
             var userName = "Alice";
-            AssertPostReturnedByWall(subject, userName, minsAgo, text);
-            AssertPostReturnedByWall(subject, "Bob", bobPost1MinutesAgo, bobPost1Text);
-            //AssertPostReturnedByWall(subject, "Bob", bobPost2MinutesAgo, bobPost2Text);
+            var actual = subject.Read(userName);
+            Assert.AreEqual(1, actual.Count);
+            AssertPostReturnedByWall(minsAgo, text, actual.First());
+
+            actual = subject.Read("Bob");
+            Assert.AreEqual(2, actual.Count);
+
+            AssertPostReturnedByWall(bobPost1MinutesAgo, bobPost1Text, actual.First());
+            AssertPostReturnedByWall(bobPost2MinutesAgo, bobPost2Text, actual.Last());
         }
 
-        private static void AssertPostReturnedByWall(Wall subject, string userName, string minsAgo, string text)
+        private static void AssertPostReturnedByWall(string minsAgo, string text, Post actual)
         {
-            var actual = subject.Read(userName);
             Assert.AreEqual(minsAgo, actual.TimeSince);
             Assert.AreEqual(text, actual.Text);
         }

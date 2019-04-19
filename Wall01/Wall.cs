@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Xsl;
 using Wall01;
 
 namespace Wall01
@@ -43,13 +44,15 @@ namespace Wall01
         }
 
 
-        public Post Read(string userName)
+        public IList<Post> Read(string userName)
         {
             var user = GetUser(userName);
             var posts = user.Posts;
-            var post = posts.FirstOrDefault();
-            post.CalcTimeSince(_dateDiff);
-            return post;
+            foreach (var post in posts)
+            {
+                post.CalcTimeSince(_dateDiff);
+            }
+            return posts;
         }
     }
 
