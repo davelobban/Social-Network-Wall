@@ -6,6 +6,13 @@ namespace Wall01
     {
 
         private Post _post;
+        private IDateDiff _dateDiff;
+
+        public Wall(IDateDiff dateDiff)
+        {
+            _dateDiff = dateDiff;
+        }
+
         public void Post(string user, string text)
         {
             var timestamp = DateTime.Now;
@@ -14,7 +21,9 @@ namespace Wall01
 
         public Post Read(string alice)
         {
-            return _post;
+            var post=_post;
+            post.CalcTimeSince(_dateDiff);
+            return post;
         }
     }
 }
