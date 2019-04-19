@@ -4,15 +4,17 @@ namespace Wall01
 {
     public class Wall
     {
-        private string _text;
-        public void Post(string alice, string text)
+
+        private Post _post;
+        public void Post(string user, string text)
         {
-            _text = text;
+            var timestamp = DateTime.Now;
+            _post = new Post(user, text, timestamp);
         }
 
-        public string Read(string alice)
+        public Post Read(string alice)
         {
-            return _text;
+            return _post;
         }
     }
 }

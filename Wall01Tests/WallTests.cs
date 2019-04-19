@@ -12,16 +12,15 @@ namespace Tests
         }
 
         [Test]
-        public void Read_MessagePosted_MessageDisplayed()
+        public void Read_MessagePosted_MessageTextReturned()
         {
             var subject = new Wall();
 
             var text = "I love the weather today";
             subject.Post("Alice", text);
-            var actual = subject.Read("Alice");
+            var actual = subject.Read("Alice").Text;
 
             Assert.AreEqual(text, actual);
-
 
         }
     }
