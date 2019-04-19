@@ -1,0 +1,56 @@
+!/ElasticsearchStack/MPD.LogstashInstall/Content/nssm.exe
+
+#ignore thumbnails created by windows
+Thumbs.db
+
+#ignore output directory
+out/
+CustomerSetups/*
+[Tt]ools/
+*NUnit3Tests.xml
+*TestResult.xml
+
+#Ignore files build by Visual Studio
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.bak
+*.cache
+*.ilk
+*.log
+*.trx
+[Bb]in
+[Dd]ebug*/
+*.sbr
+obj/
+.vs/
+[Rr]elease*/
+_ReSharper*/
+
+[Pp]ackages/
+/Tools
+
+.vscode/
+.idea/
+
+
+# Others
+ClientBin/
+[Ss]tyle[Cc]op.*
+~$*
+*~
+*.dbmdl
+*.jfm
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+node_modules/
+orleans.codegen.cs.idea/
+*Mascot.Website/web.config
+
+TESTNAME*.txt
