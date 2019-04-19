@@ -7,9 +7,11 @@ namespace Wall01
 {
     public class DateDiff: IDateDiff
     {
+
         public string GetTimeSincePosted(Post post)
         {
-            throw new NotImplementedException();
+            return GetTimeBetween(post.Timestamp, DateTime.Now);
+
         }
 
         public string GetTimeBetween(DateTime t1, DateTime t2)

@@ -185,6 +185,17 @@ namespace Tests
             var expected = "(more than 24 hours ago)";
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void GetTimeSincePosted_90Seconds_Returns1Minute()
+        {
+            var post = new Post(null, null, DateTime.Now.AddSeconds(-90));
+            
+            var subject = new DateDiff();
+            var actual = subject.GetTimeSincePosted(post);
+            var expected = "(1 minute ago)";
+            Assert.AreEqual(expected, actual);
+        }
     }
 
 

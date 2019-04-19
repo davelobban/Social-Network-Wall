@@ -8,8 +8,13 @@ namespace Wall01
         private Post _post;
         private IDateDiff _dateDiff;
 
-        public Wall(IDateDiff dateDiff)
+        public Wall(IDateDiff dateDiff=null)
         {
+            if (dateDiff == null)
+            {
+                dateDiff= new DateDiff();
+            }
+
             _dateDiff = dateDiff;
         }
 
