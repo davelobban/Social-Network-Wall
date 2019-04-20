@@ -111,6 +111,42 @@ namespace Tests
             Assert.AreEqual("Good game though. (1 minute ago)", actual[0]);
             Assert.AreEqual("Damn! We lost! (2 minutes ago)", actual[1]);
         }
+
+        /*> Charlie follows Alice
+> Charlie wall
+> Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)
+> Alice - I love the weather today (5 minutes ago)*/
+
+        [Test]
+        public void CharlieFollowsAliceThenCharlieWallThenFollowsBobThenWall_AllPostsPosted_ReturnsWallFormatted()
+        {
+            var subject = GetSubjectWithMessagesPosted();
+
+            var actual = subject.AcceptInput("Charlie follows Alice");
+            Assert.AreEqual(0, actual.Count);
+
+            actual = subject.AcceptInput("Charlie wall");
+            Assert.AreEqual(2, actual.Count);
+            Assert.AreEqual("Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)", actual[0]);
+            Assert.AreEqual("Alice - I love the weather today (5 minutes ago)", actual[1]);
+
+            actual = subject.AcceptInput("Charlie follows Bob");
+            Assert.AreEqual(0, actual.Count);
+            actual = subject.AcceptInput("Charlie wall");
+            Assert.AreEqual(4, actual.Count);
+
+            var expectedOutputs = new List<string>
+            {
+                "Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)",
+                "Bob - Good game though. (1 minute ago)",
+                "Bob - Damn! We lost! (2 minutes ago)",
+                "Alice - I love the weather today (5 minutes ago)"
+            };
+            for (int i = 0; i < expectedOutputs.Count; i++)
+            {
+                Assert.AreEqual(expectedOutputs[i], actual[i]);
+            }
+        }
     }
 
 }
