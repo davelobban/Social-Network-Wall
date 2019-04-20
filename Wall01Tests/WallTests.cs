@@ -9,14 +9,14 @@ namespace Tests
     [TestFixture]
     public class WallTests
     {
-        string _alicePost1MinutesAgo = "(5 minutes ago)";
-        string _alicePost1Text = "I love the weather today";
-        string _bobPost1MinutesAgo = "(2 minutes ago)";
-        string _bobPost1Text = "Damn! We lost!";
-        string _bobPost2MinutesAgo = "(1 minute ago)";
-        string _bobPost2Text = "Good game though.";
-        string _charliePost1MinsAgo = "(2 seconds ago)";
-        string _charliePost1Text = "I'm in New York today! Anyone wants to have a coffee?";
+        readonly string _alicePost1MinutesAgo = "(5 minutes ago)";
+        readonly string _alicePost1Text = "I love the weather today";
+        readonly string _bobPost1MinutesAgo = "(2 minutes ago)";
+        readonly string _bobPost1Text = "Damn! We lost!";
+        readonly string _bobPost2MinutesAgo = "(1 minute ago)";
+        readonly string _bobPost2Text = "Good game though.";
+        readonly string _charliePost1MinsAgo = "(2 seconds ago)";
+        readonly string _charliePost1Text = "I'm in New York today! Anyone wants to have a coffee?";
 
 
         private static string Alice => "Alice";
