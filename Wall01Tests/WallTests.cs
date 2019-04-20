@@ -64,7 +64,7 @@ namespace Tests
             var alicePost1Text = "I love the weather today";
             var bobPost1MinutesAgo = "(2 minutes ago)";
             var bobPost1Text = "Damn! We lost!";
-            var bobPost2MinutesAgo = "(5 minutes ago)";
+            var bobPost2MinutesAgo = "(1 minute ago)";
             var bobPost2Text = "Good game though.";
 
             var dateDiffProvider = new Mock<IDateDiff>();
@@ -90,8 +90,8 @@ namespace Tests
             actual = subject.Read("Bob");
             Assert.AreEqual(2, actual.Count);
 
-            AssertPostReturnedByWallRead(bobPost1MinutesAgo, bobPost1Text, actual.First());
-            AssertPostReturnedByWallRead(bobPost2MinutesAgo, bobPost2Text, actual.Last());
+            AssertPostReturnedByWallRead(bobPost2MinutesAgo, bobPost2Text, actual.First());
+            AssertPostReturnedByWallRead(bobPost1MinutesAgo, bobPost1Text, actual.Last());
         }
 
         private static void AssertPostReturnedByWallRead(string minsAgo, string text, HistoricPost actual)
@@ -124,6 +124,39 @@ namespace Tests
             
         }
 
+        [Test]
+        public void Wall_2MessagesPostedByBob_PostsReturned()
+        {
+            var bobPost1MinutesAgo = "(2 minutes ago)";
+            var bobPost1Text = "Damn! We lost!";
+            var bobPost2MinutesAgo = "(1 minute ago)";
+            var bobPost2Text = "Good game though.";
+
+            var dateDiffProvider = new Mock<IDateDiff>();
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == bobPost1Text))).Returns(bobPost1MinutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == bobPost2Text))).Returns(bobPost2MinutesAgo);
+
+            var subject = new Wall(dateDiffProvider.Object);
+
+            var userName = "Bob";
+            subject.Post("Bob", bobPost1Text);
+            subject.Post("Bob", bobPost2Text);
+
+
+            var expected = new List<string>
+            {
+                "Bob - Good game though. (1 minute ago)",
+                "Bob - Damn! We lost! (2 minutes ago)"
+            };
+            var responses = subject.GetWall(userName);
+            var actual = responses.Select(r => r.FormattedOutputPrependedWithUserName).ToList();
+            Assert.AreEqual(expected.Count, actual.Count);
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
+
+        }
 
     }
 

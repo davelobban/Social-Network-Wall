@@ -6,7 +6,13 @@ namespace Wall01
 {
     public class WallPoster
     {
-        
+        private UsersRepository _usersRepository;
+
+        public WallPoster(UsersRepository usersRepository)
+        {
+            _usersRepository = usersRepository;
+        }
+
         public void Post(string userName, string text)
         {
             var timestamp = DateTime.Now;
@@ -15,7 +21,7 @@ namespace Wall01
         }
         private User GetUser(string userName)
         {
-            return Users.GetUser(userName);
+            return _usersRepository.GetUser(userName);
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Wall01
 {
     public class Wall
     {
-
         private readonly WallPoster _wallPoster;
         private readonly WallReader _wallReader;
 
@@ -17,9 +16,9 @@ namespace Wall01
             {
                 dateDiff = new DateDiff();
             }
-
-            _wallPoster = new WallPoster();
-            _wallReader = new WallReader(dateDiff);
+            var usersRepository = new UsersRepository();
+            _wallPoster = new WallPoster(usersRepository);
+            _wallReader = new WallReader(dateDiff, usersRepository);
         }
 
         public void Post(string userName, string text)
