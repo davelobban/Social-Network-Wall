@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Xsl;
 using Wall01;
 
@@ -9,6 +10,8 @@ namespace Wall01
     {
         private readonly WallPoster _wallPoster;
         private readonly WallReader _wallReader;
+        private IDictionary<User, List<User>> _following;
+        private UsersRepository _usersRepository;
 
         public Wall(IDateDiff dateDiff = null)
         {
@@ -16,9 +19,10 @@ namespace Wall01
             {
                 dateDiff = new DateDiff();
             }
-            var usersRepository = new UsersRepository();
-            _wallPoster = new WallPoster(usersRepository);
-            _wallReader = new WallReader(dateDiff, usersRepository);
+            _usersRepository = new UsersRepository();
+            _following = new Dictionary<User, List<User>>();
+            _wallPoster = new WallPoster(_usersRepository);
+            _wallReader = new WallReader(dateDiff, _usersRepository);
         }
 
         public void Post(string userName, string text)
@@ -33,7 +37,27 @@ namespace Wall01
 
         public IList<HistoricPost> GetWall(string userName)
         {
+            var follower = _usersRepository.GetUser(userName);
+            if (_following.ContainsKey(follower))
+            {
+                var following = _following[follower];
+
+                return _wallReader.Read(following, follower);
+            }
             return _wallReader.Read(userName);
+        }
+
+        public void Follow(string followerUserName, string target)
+        {
+            var follower = _usersRepository.GetUser(followerUserName);
+            if (_following.ContainsKey(follower) == false)
+            {
+                _following.Add(follower, new List<User>());
+            }
+
+            var followerFollows = _following.Single(f => f.Key == follower);
+            var targetUser = _usersRepository.GetUser(target);
+            followerFollows.Value.Add(targetUser);
         }
     }
 }
