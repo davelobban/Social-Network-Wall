@@ -9,7 +9,7 @@ namespace WallConsole
     public class InputHandler
     {
         private Wall01.Wall _wall;
-        public InputHandler(IDateDiff dateDiff)
+        public InputHandler(IDateDiff dateDiff=null)
         {
             _wall= new Wall(dateDiff);
         }
