@@ -19,6 +19,11 @@ namespace Tests
         string _charliePost1Text = "I'm in New York today! Anyone wants to have a coffee?";
 
 
+        private static string Alice => "Alice";
+        private static string Bob => "Bob";
+        private static string Charlie => "Charlie";
+
+
         [SetUp]
         public void Setup()
         {
@@ -48,7 +53,7 @@ namespace Tests
         private static Mock<IDateDiff> GetMockDateDiffProvider(string minutesAgo)
         {
             var dateDiffProvider = new Mock<IDateDiff>();
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.IsAny<HistoricPost>())).Returns(minutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.IsAny<Post>())).Returns(minutesAgo);
             return dateDiffProvider;
         }
 
@@ -93,13 +98,13 @@ namespace Tests
         private Wall GetSubjectWithDateDiffProvider()
         {
             var dateDiffProvider = new Mock<IDateDiff>();
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == _alicePost1Text)))
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == _alicePost1Text)))
                 .Returns(_alicePost1MinutesAgo);
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == _bobPost1Text)))
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == _bobPost1Text)))
                 .Returns(_bobPost1MinutesAgo);
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == _bobPost2Text)))
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == _bobPost2Text)))
                 .Returns(_bobPost2MinutesAgo);
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == _charliePost1Text)))
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == _charliePost1Text)))
                 .Returns(_charliePost1MinsAgo);
             var subject = new Wall(dateDiffProvider.Object);
             return subject;
@@ -156,7 +161,7 @@ namespace Tests
         }
 
         [Test]
-        public void Follow_CharlieFollowsAlice_CharlieAndAlicePostsReturnedInRecencyOrder()
+        public void Follow_CharlieFollowsAliceAndThenBob_CharlieBobAndAlicePostsReturnedInRecencyOrder()
         {
             var subject = GetSubjectWithDateDiffProvider();
 
@@ -187,7 +192,6 @@ namespace Tests
             actual = responses.Select(r => r.FormattedOutputPrependedWithUserName).ToList();
             AssertGetWallResponsesEqualExpected(expected, actual);
 
-
         }
 
         private static void AssertGetWallResponsesEqualExpected(List<string> expected, List<string> actual)
@@ -199,11 +203,41 @@ namespace Tests
             }
         }
 
-        private static string Alice=> "Alice";
+        [Test]
+        public void Follow_AliceFollowsCharlieAndThenBob_CharlieBobAndAlicePostsReturnedInRecencyOrder()
+        {
+            var subject = GetSubjectWithDateDiffProvider();
 
-        private static string Bob => "Bob";
+            subject.Post(Alice, _alicePost1Text);
+            subject.Post(Bob, _bobPost1Text);
+            subject.Post(Bob, _bobPost2Text);
+            subject.Post(Charlie, _charliePost1Text);
 
-        private static string Charlie => "Charlie";
+            subject.Follow( Alice, Charlie);
+            var expected = new List<string>
+            {
+                "Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)",
+                "Alice - I love the weather today (5 minutes ago)"
+            };
+            var responses = subject.GetWall(Alice);
+            var actual = responses.Select(r => r.FormattedOutputPrependedWithUserName).ToList();
+            AssertGetWallResponsesEqualExpected(expected, actual);
+
+            subject.Follow(Alice, Bob);
+            expected = new List<string>
+            {
+                "Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)",
+                "Bob - Good game though. (1 minute ago)",
+                "Bob - Damn! We lost! (2 minutes ago)",
+                "Alice - I love the weather today (5 minutes ago)"
+            };
+            responses = subject.GetWall(Alice);
+            actual = responses.Select(r => r.FormattedOutputPrependedWithUserName).ToList();
+            AssertGetWallResponsesEqualExpected(expected, actual);
+
+        }
+
+
     }
 
 

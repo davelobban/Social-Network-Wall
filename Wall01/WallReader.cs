@@ -44,7 +44,7 @@ namespace Wall01
                 }
             }
             historicPosts.AddRange(Read(wallOwner));
-            historicPosts.Reverse();
+            historicPosts = historicPosts.OrderByDescending(p => p.Id).ToList();
             return historicPosts;
         }
 

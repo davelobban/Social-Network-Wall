@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Wall01
 {
-    public class UsersRepository
+    public interface IPostIdProvider
+    {
+        int GetNextId();
+    }
+
+    public class UsersRepository : IPostIdProvider
     {
         private IList<User> _postingUsers = new List<User>();
 
@@ -16,6 +22,18 @@ namespace Wall01
                 _postingUsers.Add(user);
             }
             return user;
+        }
+
+        public void Post(string userName, string text)
+        {
+            var timestamp = DateTime.Now;
+            var user = GetUser(userName);
+            user.AddPost(userName, text, timestamp, this);
+        }
+
+        public int GetNextId()
+        {
+            return _postingUsers.Sum(u=>u.Posts.Count);
         }
     }
 }

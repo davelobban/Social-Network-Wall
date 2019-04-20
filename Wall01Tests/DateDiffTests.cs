@@ -189,7 +189,9 @@ namespace Tests
         [Test]
         public void GetTimeSincePosted_90Seconds_Returns1Minute()
         {
-            var post = new Post(null, null, DateTime.Now.AddSeconds(-90));
+            var mockIdProvider = new Mock<IPostIdProvider>();
+            mockIdProvider.Setup(m => m.GetNextId()).Returns(1);
+            var post = new Post(null, null, DateTime.Now.AddSeconds(-90), mockIdProvider.Object);
             
             var subject = new DateDiff();
             var actual = subject.GetTimeSincePosted(post);

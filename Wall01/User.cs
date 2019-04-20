@@ -13,9 +13,9 @@ namespace Wall01
             Name = name;
         }
 
-        public void AddPost(string userName, string text, DateTime timestamp)
+        public void AddPost(string userName, string text, DateTime timestamp, IPostIdProvider postIdProvider)//, int Id)
         {
-            Posts.Add(new Post(Name,text,timestamp));
+            Posts.Add(new Post(Name,text,timestamp, postIdProvider));
         }
     }
 }

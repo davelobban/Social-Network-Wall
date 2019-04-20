@@ -15,13 +15,8 @@ namespace Wall01
 
         public void Post(string userName, string text)
         {
-            var timestamp = DateTime.Now;
-            var user = GetUser(userName);
-            user.AddPost(userName, text, timestamp);
+            _usersRepository.Post(userName, text);
         }
-        private User GetUser(string userName)
-        {
-            return _usersRepository.GetUser(userName);
-        }
+       
     }
 }
