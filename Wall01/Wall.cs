@@ -31,6 +31,11 @@ namespace Wall01
         {
             return _wallReader.Read(userName);
         }
+
+        public IList<HistoricPost> GetWall(string userName)
+        {
+            return _wallReader.Read(userName);
+        }
     }
 }
 

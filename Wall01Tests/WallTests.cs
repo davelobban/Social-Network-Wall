@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -98,6 +99,32 @@ namespace Tests
             Assert.AreEqual(minsAgo, actual.TimeSince);
             Assert.AreEqual(text, actual.Text);
         }
+
+
+        [Test]
+        public void Wall_1MessagePostedByCharlie_PostReturned()
+        {
+            var charliePost2SecsAgo = "(2 seconds ago)";
+            var charliePost1Text = "I'm in New York today! Anyone wants to have a coffee?";
+            
+            var dateDiffProvider = new Mock<IDateDiff>();
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == charliePost1Text))).Returns(charliePost2SecsAgo);
+            
+            var subject = new Wall(dateDiffProvider.Object);
+
+            var userName = "Charlie";
+            subject.Post(userName, charliePost1Text);
+
+            var expected = new List<string>
+                {"Charlie - I'm in New York today! Anyone wants to have a coffee? (2 seconds ago)"};
+            var responses = subject.GetWall(userName);
+            var actual = responses.Select(r => r.FormattedOutputPrependedWithUserName).ToList();
+            Assert.AreEqual(1, actual.Count);
+            Assert.AreEqual(expected[0], actual[0]);
+            
+        }
+
+
     }
 
 
