@@ -28,18 +28,17 @@ namespace Wall01
         {
             var timestamp = DateTime.Now;
             var user = GetUser(userName);
+            user.AddPost(userName, text, timestamp);
+        }
+
+        protected User GetUser(string userName)
+        {
+            var user = _users.FirstOrDefault(u => u.Name == userName);
             if (user == null)
             {
                 user = new User(userName);
                 _users.Add(user);
             }
-
-            user.AddPost(userName, text, timestamp);
-        }
-
-        private User GetUser(string userName)
-        {
-            var user = _users.FirstOrDefault(u => u.Name == userName);
             return user;
         }
 
