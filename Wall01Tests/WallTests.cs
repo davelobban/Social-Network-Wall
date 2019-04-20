@@ -37,7 +37,7 @@ namespace Tests
         private static Mock<IDateDiff> GetMockDateDiffProvider(string minutesAgo)
         {
             var dateDiffProvider = new Mock<IDateDiff>();
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.IsAny<Post>())).Returns(minutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.IsAny<HistoricPost>())).Returns(minutesAgo);
             return dateDiffProvider;
         }
 
@@ -67,9 +67,9 @@ namespace Tests
             var bobPost2Text = "Good game though.";
 
             var dateDiffProvider = new Mock<IDateDiff>();
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == alicePost1Text))).Returns(alicePost1MinutesAgo);
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == bobPost1Text))).Returns(bobPost1MinutesAgo);
-            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<Post>(p => p.Text == bobPost2Text))).Returns(bobPost2MinutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == alicePost1Text))).Returns(alicePost1MinutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == bobPost1Text))).Returns(bobPost1MinutesAgo);
+            dateDiffProvider.Setup(d => d.GetTimeSincePosted(It.Is<HistoricPost>(p => p.Text == bobPost2Text))).Returns(bobPost2MinutesAgo);
 
 
             var subject = new Wall(dateDiffProvider.Object);
@@ -84,16 +84,16 @@ namespace Tests
             var userName = "Alice";
             var actual = subject.Read(userName);
             Assert.AreEqual(1, actual.Count);
-            AssertPostReturnedByWall(minsAgo, text, actual.First());
+            AssertPostReturnedByWallRead(minsAgo, text, actual.First());
 
             actual = subject.Read("Bob");
             Assert.AreEqual(2, actual.Count);
 
-            AssertPostReturnedByWall(bobPost1MinutesAgo, bobPost1Text, actual.First());
-            AssertPostReturnedByWall(bobPost2MinutesAgo, bobPost2Text, actual.Last());
+            AssertPostReturnedByWallRead(bobPost1MinutesAgo, bobPost1Text, actual.First());
+            AssertPostReturnedByWallRead(bobPost2MinutesAgo, bobPost2Text, actual.Last());
         }
 
-        private static void AssertPostReturnedByWall(string minsAgo, string text, Post actual)
+        private static void AssertPostReturnedByWallRead(string minsAgo, string text, HistoricPost actual)
         {
             Assert.AreEqual(minsAgo, actual.TimeSince);
             Assert.AreEqual(text, actual.Text);

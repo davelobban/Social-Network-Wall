@@ -44,31 +44,16 @@ namespace Wall01
         }
 
 
-        public IList<Post> Read(string userName)
+        public IList<HistoricPost> Read(string userName)
         {
             var user = GetUser(userName);
             var posts = user.Posts;
+            var historicPosts = new List<HistoricPost>();
             foreach (var post in posts)
             {
-                post.CalcTimeSince(_dateDiff);
+                historicPosts.Add(new HistoricPost(post, _dateDiff));
             }
-            return posts;
-        }
-    }
-
-    public class User
-    {
-        public string Name { get; }
-        public IList<Post> Posts { get; } = new List<Post>();
-
-        public User(string name)
-        {
-            Name = name;
-        }
-
-        public void AddPost(string userName, string text, DateTime timestamp)
-        {
-            Posts.Add(new Post(Name,text,timestamp));
+            return historicPosts;
         }
     }
 }
